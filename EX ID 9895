@@ -1,0 +1,12 @@
+/*Find all emails with duplicates.*/
+
+import pyspark.sql.functions as F
+
+employee_df=(
+    employee
+    .groupBy("email")
+    .agg(F.count('email').alias("number_per_email"))
+    .filter(F.col('number_per_email')>1)
+    ).show()
+
+employee_df.toPandas()
