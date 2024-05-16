@@ -1,0 +1,14 @@
+/*Find the number of rows for each review score earned by 'Hotel Arena'. 
+Output the hotel name (which should be 'Hotel Arena'), review score along with the corresponding number of rows with that score for the specified hotel.*/
+
+import pyspark.sql.functions as F
+
+# Start writing code
+hotel_reviews_df=(
+    hotel_reviews
+    .filter(F.col("hotel_name")=="Hotel Arena")
+    .groupby('hotel_name', "reviewer_score")
+    .agg(F.count("reviewer_score").alias("score"))
+    .select ("hotel_name","reviewer_score", "score")
+    .toPandas()
+    )
