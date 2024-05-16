@@ -1,0 +1,15 @@
+/*Find all posts which were reacted to with a heart. For such posts output all columns from facebook_posts table.*/
+
+# Import your libraries
+import pyspark.sql.functions as F
+
+facebook_reactions_df=(
+    facebook_reactions.filter(F.col('reaction')== 'heart')
+    )
+    
+post_df = (
+    facebook_posts
+    .join(facebook_reactions_df, ["post_id"], "inner")
+    .select("post_id", facebook_posts["poster"], "post_text", "post_keywords", "post_date").distinct()
+    .toPandas()
+)
