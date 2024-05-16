@@ -1,0 +1,10 @@
+/*Find all Lyft drivers who earn either equal to or less than 30k USD or equal to or more than 70k USD.
+Output all details related to retrieved records.*/
+
+# Import your libraries
+import pyspark.sql.functions as F
+
+lyft_drivers_df=(
+    lyft_drivers.filter((F.col('yearly_salary') <= 30000) | (F.col('yearly_salary') >= 70000))
+    .toPandas()
+    )
