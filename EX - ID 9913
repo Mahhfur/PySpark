@@ -1,0 +1,23 @@
+/* 
+Find order details made by Jill and Eva.
+Consider the Jill and Eva as first names of customers.
+Output the order date, details and cost along with the first name.
+Order records based on the customer id in ascending order. */
+
+# Importar as bibliotecas necessárias
+import pyspark.sql.functions as F
+
+# Filtrar o DataFrame de clientes
+customers_df = (
+    customers
+    .filter((F.col('first_name') == 'Jill') | (F.col('first_name') == 'Eva'))
+    )
+
+# Realizar o join entre os DataFrames 'orders' e 'customers_df', selecionar colunas e ordenar
+order_df = (
+    orders
+    .join(customers_df, orders.cust_id == customers_df.id)
+    .select("first_name", "order_date", "order_details", "total_order_cost")
+    .orderBy(customers_df['id'])
+    .toPandas()
+)
