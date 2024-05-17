@@ -1,0 +1,12 @@
+/*Find the base pay for Police Captains.
+Output the employee name along with the corresponding base pay.*/
+
+import pyspark.sql.functions as F
+
+sf_public_salaries_df = (
+    sf_public_salaries
+    .filter((F.col('jobtitle')
+    .like('%CAPTAIN%')) & (F.col('jobtitle').like('%POLICE%')))
+    .select('employeename', 'basepay')
+    .toPandas()
+     )
