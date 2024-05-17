@@ -1,0 +1,10 @@
+/*ind libraries who haven't provided the email address in circulation year 2016 but their notice preference definition is set to email.
+Output the library code.*/
+
+# Import your libraries
+import pyspark.sql.functions as F 
+
+# Start writing code
+library_usage_df=(
+    library_usage.filter((F.col('notice_preference_definition') == 'email') & (F.col('provided_email_address') == 'False') & (F.col('circulation_active_year') == '2016')).select('home_library_code').distinct().toPandas()
+    )
