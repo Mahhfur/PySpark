@@ -1,0 +1,24 @@
+/* You have been asked to find the 5 most lucrative products in 
+terms of total revenue for the first half of 2022 (from January to June inclusive). */
+
+
+Output their IDs and the total revenue.
+# Import your libraries
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
+
+# Start writing code
+online_orders = online_orders.withColumn("date", F.to_date(F.col("date")))
+online_orders = online_orders.withColumn("month", F.month(F.col("date")))
+
+online_orders_df=(
+    online_orders
+    .filter((F.col("month") >= 1) & (F.col("month") <= 6))
+    .withColumn('valor', F.col("cost_in_dollars") * F.col("units_sold"))
+    .withColumn("valor", F.col("valor").cast("integer"))
+    .groupby('product_id')
+    .agg(F.sum('valor').alias("total"))
+    .orderBy(F.desc("total"))
+    .limit(5)
+    .toPandas()
+    )
