@@ -1,0 +1,14 @@
+/*Find the number of employees working in the Admin department that joined in April or later.*/
+
+# Importar as bibliotecas necessárias
+import pyspark.sql.functions as F
+from pyspark.sql.types import DateType
+
+worker = worker.withColumn('joining_date', F.to_date(F.col('joining_date')))
+worker = worker.withColumn('month', F.month(F.col('joining_date')))
+
+employee_count = (
+    worker
+    .filter((F.col("month") >= 4) & (F.col("department") == 'Admin'))
+    .count()
+)
