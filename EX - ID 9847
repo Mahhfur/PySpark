@@ -1,0 +1,20 @@
+/* Find the number of workers by department who joined in or after April.
+Output the department name along with the corresponding number of workers.
+Sort records based on the number of workers in descending order. */
+
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
+
+worker = worker.withColumn("joining_date", F.to_date(worker["joining_date"]))
+worker = worker.withColumn("month", F.month(worker["joining_date"]))
+
+
+result = (
+    worker.filter(F.col("month") >= 4)
+    .groupBy("department")
+    .agg(F.count("*").alias("num_workers"))
+    .orderBy(F.desc("num_workers"))
+    .select("department", "num_workers")
+)
+
+result.toPandas()
