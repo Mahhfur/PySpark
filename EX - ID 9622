@@ -1,0 +1,13 @@
+/* Find the average number of bathrooms and bedrooms for each city’s property types. 
+Output the result along with the city name and the property type. */
+
+# Import your libraries
+import pyspark.sql.functions as F
+
+# Start writing code
+airbnb_search_details_df=(
+    airbnb_search_details
+    .groupby("city",'property_type')
+    .agg(F.avg("bedrooms"),F.avg("bathrooms").alias("media_banheiros"))
+    .toPandas()
+    )
