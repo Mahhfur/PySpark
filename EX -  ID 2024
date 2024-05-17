@@ -1,0 +1,8 @@
+/*Write a query that returns the number of unique users per client per month*/
+import pyspark.sql.functions as F
+
+fact_events_df = (
+    fact_events
+    .groupby(('client_id'), F.month(F.col('time_id')))
+    .agg(F.countDistinct('user_id'))
+    .toPandas())
