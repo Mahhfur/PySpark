@@ -1,0 +1,15 @@
+/*Find the most profitable company from the financial sector. Output the result along with the continent.*/
+
+# Import your libraries
+import pyspark.sql.functions as F
+
+forbes_global_2010_2014_df=(
+    forbes_global_2010_2014
+    .filter(F.col('sector')=='Financials')
+    .groupby('company', 'sector', 'continent')
+    .agg(F.sum('profits').alias('lucro_total'))
+    .sort(F.desc('lucro_total'))
+    .select('company', 'continent')
+    .limit(1)
+    .toPandas()
+    )
