@@ -1,0 +1,14 @@
+/*You have been asked to find the job titles of the highest-paid employees.
+Your output should include the highest-paid title or multiple titles with the same salary.*/
+
+import pyspark.sql.functions as F
+
+max_salario = worker.agg(F.max(F.col('salary')).alias("max_salario")).collect()[0]["max_salario"]
+
+join_DF=(
+    worker
+    .join(title, worker.worker_id == title.worker_ref_id, 'inner')
+    .filter(F.col('salary')== max_salario)
+    .select('worker_title')
+    .toPandas()
+    )
