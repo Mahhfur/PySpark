@@ -1,0 +1,29 @@
+/* You are given a table of product launches by company by year. 
+Write a query to count the net difference between the number of products companies launched in 2020 with the number of products companies launched in the previous year. 
+Output the name of the companies and a net difference of net products released for 2020 compared to the previous year. */
+
+import pyspark.sql.functions as F
+
+car_launches_df_2019 = (
+    car_launches
+    .filter(F.col('year') == 2019)
+    .groupBy('company_name')
+    .agg(F.count('*').alias('2019'))
+)
+
+car_launches_df_2020 = (
+    car_launches
+    .filter(F.col('year') == 2020)
+    .groupBy('company_name')
+    .agg(F.count('*').alias('2020'))
+)
+
+
+# Realizando o join entre os DataFrames de 2019 e 2020
+join_df = (
+    car_launches_df_2019
+    .join(car_launches_df_2020, on='company_name', how='inner')
+    .withColumn('difference', (F.col('2020'))-(F.col('2019')))
+    .select("company_name", 'difference')
+    .toPandas()
+)
