@@ -1,0 +1,19 @@
+'''Encontre o número de apartamentos por nacionalidade pertencentes a pessoas com menos de 30 anos.
+Mostre a nacionalidade junto com o número de apartamentos.
+Classifique os registros pela contagem de apartamentos em ordem decrescente.'''
+
+import pyspark.sql.functions as F
+
+all = (
+  airbnb_units
+  .join(airbnb_hosts, on='host_id'))
+all = (
+  all
+  .filter((merged['age'] < 30) & (merged['unit_type'] == 'Apartment')))
+result = (
+  all
+  .groupby('nationality')
+  .agg(F.countDistinct('unit_id').alias('apartment_count'))
+  .orderBy('apartment_count'))
+
+result.toPandas()
