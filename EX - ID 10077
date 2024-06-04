@@ -1,0 +1,29 @@
+'''Encontre a remuneração total média com base nos cargos e sexo dos funcionários. A remuneração total é calculada somando o salário e o bônus de cada funcionário. 
+Porém, nem todo funcionário recebe bônus, então desconsidere funcionários sem bônus em seu cálculo. O funcionário pode receber mais de um bônus.
+Produza o cargo do funcionário, gênero (ou seja, sexo), juntamente com a remuneração média total.'''
+
+import pyspark.sql.functions as F 
+
+soma_bonus_df=(
+    sf_bonus
+    .groupby(F.col('worker_ref_id'))
+    .agg(F.sum('bonus').alias('soma_bonus'))
+    )
+
+merge_df = (
+    sf_employee
+    .join(soma_bonus_df, sf_employee.id == soma_bonus_df.worker_ref_id, how='inner')
+)
+
+soma_df = (
+    merge_df
+    .withColumn('soma_total', F.col('salary') + F.col('soma_bonus'))
+)
+
+media_df=(
+  soma_df
+  .groupby('employee_title', 'sex')
+  .agg(F.avg('soma_total').alias('avg_total'))
+  .toPandas()
+)
+
