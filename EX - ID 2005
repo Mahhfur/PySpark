@@ -1,0 +1,14 @@
+'''Parcela de saída de usuários ativos nos EUA. Usuários ativos são aqueles com status "aberto" na tabela.'''
+
+import pyspark
+
+dfa = (
+  fb_active_users
+  .filter(fb_active_users.country == "USA").count())
+
+dff = (
+  fb_active_users
+  .filter((fb_active_users.country == "USA") & (fb_active_users.status == "open")).count())
+
+dff/dfa
+
