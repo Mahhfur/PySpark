@@ -1,14 +1,15 @@
 '''Parcela de saída de usuários ativos nos EUA. Usuários ativos são aqueles com status "aberto" na tabela.'''
 
-import pyspark
+import pyspark.sql.functions as F
 
-dfa = (
-  fb_active_users
-  .filter(fb_active_users.country == "USA").count())
-
-dff = (
-  fb_active_users
-  .filter((fb_active_users.country == "USA") & (fb_active_users.status == "open")).count())
-
-dff/dfa
-
+# Start writing code
+ativos_df = (
+    fb_active_users
+    .filter(F.col('status')=='aberto')
+    .count()
+    )
+total_df = (
+    fb_active_users
+    .count()
+    )
+parcela = ativos_df/total_df
