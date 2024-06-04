@@ -1,0 +1,13 @@
+'''A ABC Corp é uma seguradora de médio porte nos EUA e, no passado recente, suas reivindicações fraudulentas aumentaram significativamente em sua carteira de seguros de automóveis pessoais.
+Eles desenvolveram um modelo preditivo baseado em ML para identificar a propensão a reivindicações fraudulentas. 
+Agora, eles designam avaliadores de sinistros altamente experientes para os 5 percentis principais de sinistros identificados pelo modelo. 
+Seu objetivo é identificar os 5 percentis principais de reivindicações de cada estado. Sua saída deve ser o número da apólice, estado, custo do sinistro e pontuação de fraude.'''
+
+import pyspark.sql.functions as F
+from pyspark.sql import Window
+
+result = (
+  fraud_score 
+    .withColumn('pcnt_rank', F.percent_rank().over(Window.partitionBy('state').orderBy('fraud_score'))) 
+    .where(F.col('pcnt_rank') >= 0.95) 
+    .select('policy_num', 'state', 'claim_cost', 'fraud_score')).toPandas()
