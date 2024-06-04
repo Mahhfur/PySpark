@@ -13,9 +13,9 @@ sf_transactions = (
   sf_transactions
   .withColumn('year_month', F.date_format(sf_transactions['created_at'], 'yyyy-MM')))
 df = (
-sf_transactions
-.groupBy('year_month')
-.agg(F.sum('value').alias('monthly_revenue')))
+  sf_transactions
+  .groupBy('year_month')
+  .agg(F.sum('value').alias('monthly_revenue')))
 window = (
   Window
   .orderBy('year_month'))
