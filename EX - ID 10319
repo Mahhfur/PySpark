@@ -1,0 +1,25 @@
+
+'''Dada uma tabela de compras por data, calcule a variação percentual mês a mês na receita. A saída deve incluir a data ano-mês (AAAA-MM) e a variação percentual,
+arredondada para a segunda casa decimal e classificada do início ao final do ano. 
+A coluna de alteração percentual será preenchida a partir do segundo mês e pode ser calculada como ((receita deste mês - receita do mês passado) / receita do mês passado)*100.'''
+
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
+
+sf_transactions = (
+  sf_transactions
+  .withColumn('created_at', F.to_timestamp(sf_transactions['created_at'])))
+sf_transactions = (
+  sf_transactions
+  .withColumn('year_month', F.date_format(sf_transactions['created_at'], 'yyyy-MM')))
+df = (
+sf_transactions
+.groupBy('year_month')
+.agg(F.sum('value').alias('monthly_revenue')))
+window = (
+  Window
+  .orderBy('year_month'))
+df = df.withColumn('prev_value', F.lag('monthly_revenue').over(window))
+df = df.withColumn('revenue_diff_pct', F.round(((df['monthly_revenue'] - df['prev_value'])/df['prev_value'])*100, 2))
+result = df.select('year_month', 'revenue_diff_pct').fillna('')
+result.toPandas()
