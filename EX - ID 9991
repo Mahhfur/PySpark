@@ -1,0 +1,14 @@
+'''Encontre músicas classificadas na primeira posição.
+Mostre o nome da faixa e o número de vezes que ela foi classificada no topo.
+Classifique seus registros pelo número de vezes que a música esteve na primeira posição em ordem decrescente.'''
+
+import pyspark.sql.functions as F
+
+position = (
+  spotify_worldwide_daily_song_ranking
+  .filter(F.col('position') == 1))
+result = (
+  position
+  .groupBy('trackname')
+  .agg(F.count('*').alias('times_top1'))
+  .orderBy(F.desc('times_top1'))).toPandas()
